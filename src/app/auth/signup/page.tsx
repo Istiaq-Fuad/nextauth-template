@@ -1,6 +1,5 @@
 "use client";
 
-import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -14,8 +13,6 @@ import { Label } from "@/components/ui/label";
 import SocialAuth from "../../../components/auth/socialAuth";
 import { useForm } from "react-hook-form";
 import {
-  LoginSchema,
-  LoginSchemaType,
   SignupSchema,
   SignupSchemaType,
 } from "@/schemas";
@@ -23,13 +20,12 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import AuthErrorMessage from "../../../components/auth/authErrorMessage";
 import Link from "next/link";
 import FormSubmitMessage from "../../../components/auth/formSubmitMessage";
-import { login } from "@/actions/login";
 import { useFormStatus } from "react-dom";
 import { useState } from "react";
 import { AuthResponseType } from "@/lib/types";
 import { signup } from "@/actions/signup";
 
-export default function LoginForm() {
+export default function SignupForm() {
   const [formResponse, setFormResponse] = useState<AuthResponseType>({});
 
   const {

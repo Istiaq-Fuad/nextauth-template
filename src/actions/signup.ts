@@ -1,13 +1,15 @@
 "use server";
 
+import { prisma } from "@/lib/db";
 import { AuthResponseType } from "@/lib/types";
 import { SignupSchema, SignupSchemaType } from "@/schemas";
+import { getUserByEmail } from "@/utils/getUser";
+import bcrypt from "bcryptjs";
 
-export async function signup(values: SignupSchemaType): Promise<AuthResponseType> {
+export async function signup(
+  values: SignupSchemaType
+): Promise<AuthResponseType> {
   const validatedValues = SignupSchema.safeParse(values);
-
-  // create  a delay to simulate a network request
-  // await new Promise((resolve) => setTimeout(resolve, 7000));
 
   if (!validatedValues.success) {
     return {
@@ -16,8 +18,26 @@ export async function signup(values: SignupSchemaType): Promise<AuthResponseType
     };
   }
 
-  // Login logic here
-  console.log(validatedValues);
+  const { email, password, name } = validatedValues.data;
+  const hashedPassword = await bcrypt.hash(password, 10);
+
+  const existingUser = await getUserByEmail(email);
+
+  if (existingUser) {
+    return {
+      message: "Email is already in use",
+      type: "error",
+    };
+  }
+
+  await prisma.user.create({
+    data: {
+      email,
+      password: hashedPassword,
+      name,
+    },
+  });
+
   return {
     message: "Successfully signed in",
     type: "success",
