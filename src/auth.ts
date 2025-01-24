@@ -3,15 +3,39 @@ import { PrismaAdapter } from "@auth/prisma-adapter";
 import { prisma } from "./lib/db";
 import Credentials from "next-auth/providers/credentials";
 import { LoginSchema } from "./schemas";
-import { getUserByEmail } from "./utils/getUser";
+import { getUserByEmail, getUserById } from "./utils/getUser";
 import bcrypt from "bcryptjs";
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
   adapter: PrismaAdapter(prisma),
   session: { strategy: "jwt" },
   callbacks: {
-    async jwt({ token, user }) {
-      console.log({ token });
+    async session({ session, token }) {
+      if (!session.user) return session;
+
+      if (token.sub) {
+        session.user.id = token.sub;
+      }
+
+      if (token.role) {
+        session.user.role = token.role;
+      }
+
+      return session;
+    },
+
+    async jwt({ token }) {
+      if (!token.sub) {
+        return token;
+      }
+
+      const existingUser = await getUserById(token.sub);
+
+      if (!existingUser) {
+        return token;
+      }
+
+      token.role = existingUser.role;
 
       return token;
     },
