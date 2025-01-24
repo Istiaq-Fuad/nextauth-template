@@ -5,6 +5,8 @@ import { AuthResponseType } from "@/lib/types";
 import { SignupSchema, SignupSchemaType } from "@/schemas";
 import { getUserByEmail } from "@/utils/getUser";
 import bcrypt from "bcryptjs";
+import { signIn } from "@/auth";
+import { DEFAULT_LOGIN_REDIRECT } from "@/routes";
 
 export async function signup(
   values: SignupSchemaType
@@ -30,16 +32,29 @@ export async function signup(
     };
   }
 
-  await prisma.user.create({
-    data: {
-      email,
-      password: hashedPassword,
-      name,
-    },
-  });
+  try {
+    await prisma.user.create({
+      data: {
+        email,
+        password: hashedPassword,
+        name,
+      },
+    });
 
-  return {
-    message: "Successfully signed in",
-    type: "success",
-  };
+    await signIn("credentials", {
+      email,
+      password,
+      redirectTo: DEFAULT_LOGIN_REDIRECT,
+    });
+
+    return {
+      message: "Successfully signed in",
+      type: "success",
+    };
+  } catch (error) {
+    return {
+      message: "Sign up failed",
+      type: "error",
+    };
+  }
 }
