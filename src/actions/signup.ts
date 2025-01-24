@@ -52,9 +52,6 @@ export async function signup(
       type: "success",
     };
   } catch (error) {
-    return {
-      message: "Sign up failed",
-      type: "error",
-    };
+    throw error;
   }
 }
