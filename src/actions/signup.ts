@@ -7,6 +7,7 @@ import { getUserByEmail } from "@/utils/getUser";
 import bcrypt from "bcryptjs";
 import { signIn } from "@/auth";
 import { DEFAULT_LOGIN_REDIRECT } from "@/routes";
+import { generateVerificationToken } from "@/lib/token";
 
 export async function signup(
   values: SignupSchemaType
@@ -41,14 +42,10 @@ export async function signup(
       },
     });
 
-    await signIn("credentials", {
-      email,
-      password,
-      redirectTo: DEFAULT_LOGIN_REDIRECT,
-    });
+    const verificationToken = await generateVerificationToken(email);
 
     return {
-      message: "Successfully signed in",
+      message: "Confirmation email sent",
       type: "success",
     };
   } catch (error) {

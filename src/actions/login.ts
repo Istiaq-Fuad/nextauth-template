@@ -1,9 +1,11 @@
 "use server";
 
 import { signIn } from "@/auth";
+import { generateVerificationToken } from "@/lib/token";
 import { AuthResponseType } from "@/lib/types";
 import { DEFAULT_LOGIN_REDIRECT } from "@/routes";
 import { LoginSchema, LoginSchemaType } from "@/schemas";
+import { getUserByEmail } from "@/utils/getUser";
 import { AuthError } from "next-auth";
 
 export async function login(
@@ -23,6 +25,24 @@ export async function login(
 
   // Login logic here
   const { email, password } = validatedValues.data;
+
+  const existingUser = await getUserByEmail(email);
+
+  if (!existingUser) {
+    return {
+      message: "Email does not exist",
+      type: "error",
+    };
+  }
+
+  if (!existingUser.emailVerified) {
+    const verificationToken = await generateVerificationToken(email);
+
+    return {
+      message: "Please verify your email",
+      type: "error",
+    };
+  }
 
   try {
     await signIn("credentials", {
