@@ -20,11 +20,13 @@ import Link from "next/link";
 import FormSubmitMessage from "../../../components/auth/formSubmitMessage";
 import { login } from "@/actions/login";
 import { useFormStatus } from "react-dom";
-import { useState } from "react";
-import { AuthResponseType } from "@/lib/types";
+import useAuthResponse from "@/store/authResponseStore";
 
 export default function LoginForm() {
-  const [formResponse, setFormResponse] = useState<AuthResponseType>({});
+  const authResponse = useAuthResponse((state) => state.authResponse);
+  const updateAuthResponse = useAuthResponse(
+    (state) => state.updateAuthResponse
+  );
 
   const {
     register,
@@ -56,7 +58,8 @@ export default function LoginForm() {
 
               const formValues = getValues();
               const loginResponse = await login(formValues);
-              setFormResponse(loginResponse);
+              // setFormResponse(loginResponse);
+              updateAuthResponse(loginResponse);
             }}
           >
             <div className="flex flex-col gap-6">
@@ -92,8 +95,8 @@ export default function LoginForm() {
               </div>
 
               <FormSubmitMessage
-                message={formResponse?.message}
-                type={formResponse?.type}
+                message={authResponse?.message}
+                type={authResponse?.type}
               />
 
               <SubmitButton />

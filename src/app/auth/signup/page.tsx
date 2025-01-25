@@ -12,10 +12,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import SocialAuth from "../../../components/auth/socialAuth";
 import { useForm } from "react-hook-form";
-import {
-  SignupSchema,
-  SignupSchemaType,
-} from "@/schemas";
+import { SignupSchema, SignupSchemaType } from "@/schemas";
 import { zodResolver } from "@hookform/resolvers/zod";
 import AuthErrorMessage from "../../../components/auth/authErrorMessage";
 import Link from "next/link";
@@ -24,9 +21,14 @@ import { useFormStatus } from "react-dom";
 import { useState } from "react";
 import { AuthResponseType } from "@/lib/types";
 import { signup } from "@/actions/signup";
+import useAuthResponse from "@/store/authResponseStore";
 
 export default function SignupForm() {
-  const [formResponse, setFormResponse] = useState<AuthResponseType>({});
+  // const [formResponse, setFormResponse] = useState<AuthResponseType>({});
+  const authResponse = useAuthResponse((state) => state.authResponse);
+  const updateAuthResponse = useAuthResponse(
+    (state) => state.updateAuthResponse
+  );
 
   const {
     register,
@@ -59,7 +61,8 @@ export default function SignupForm() {
 
               const formValues = getValues();
               const signupResponse = await signup(formValues);
-              setFormResponse(signupResponse);
+              // setFormResponse(signupResponse);
+              updateAuthResponse(signupResponse);
             }}
           >
             <div className="flex flex-col gap-6">
@@ -94,8 +97,8 @@ export default function SignupForm() {
               </div>
 
               <FormSubmitMessage
-                message={formResponse?.message}
-                type={formResponse?.type}
+                message={authResponse?.message}
+                type={authResponse?.type}
               />
 
               <SubmitButton />
