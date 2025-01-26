@@ -5,9 +5,8 @@ import { AuthResponseType } from "@/lib/types";
 import { SignupSchema, SignupSchemaType } from "@/schemas";
 import { getUserByEmail } from "@/utils/getUser";
 import bcrypt from "bcryptjs";
-import { signIn } from "@/auth";
-import { DEFAULT_LOGIN_REDIRECT } from "@/routes";
 import { generateVerificationToken } from "@/lib/token";
+import { sendEmailVerification } from "@/lib/sendEmail";
 
 export async function signup(
   values: SignupSchemaType
@@ -43,6 +42,11 @@ export async function signup(
     });
 
     const verificationToken = await generateVerificationToken(email);
+
+    await sendEmailVerification(
+      verificationToken.email,
+      verificationToken.token
+    );
 
     return {
       message: "Confirmation email sent",
