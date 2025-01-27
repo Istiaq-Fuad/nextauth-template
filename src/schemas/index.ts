@@ -14,3 +14,9 @@ export const SignupSchema = z.object({
 });
 
 export type SignupSchemaType = z.infer<typeof SignupSchema>;
+
+export const ResetPasswordSchema = z.object({
+  email: z.string().email(),
+});
+
+export type ResetPasswordSchemaType = z.infer<typeof ResetPasswordSchema>;
