@@ -12,7 +12,7 @@ export default function VerifyToken({
   type: string;
 }) {
   return (
-    <div className="flex flex-col items-center justify-center h-screen">
+    <div className="flex flex-col items-center justify-center min-h-svh">
       <h1
         className={cn("text-3xl font-bold mb-4", {
           "text-green-600": type === "success",

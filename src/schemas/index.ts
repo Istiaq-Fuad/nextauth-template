@@ -20,3 +20,9 @@ export const ResetPasswordSchema = z.object({
 });
 
 export type ResetPasswordSchemaType = z.infer<typeof ResetPasswordSchema>;
+
+export const NewPasswordSchema = z.object({
+  password: z.string().min(6, "Password must be 6 characters or more"),
+});
+
+export type NewPasswordSchemaType = z.infer<typeof NewPasswordSchema>;
