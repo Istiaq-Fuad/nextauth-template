@@ -1,6 +1,7 @@
 "use server";
 
 import { signIn } from "@/auth";
+import { sendEmailVerification } from "@/lib/sendEmail";
 import { generateVerificationToken } from "@/lib/token";
 import { AuthResponseType } from "@/lib/types";
 import { DEFAULT_LOGIN_REDIRECT } from "@/routes";
@@ -38,9 +39,14 @@ export async function login(
   if (!existingUser.emailVerified) {
     const verificationToken = await generateVerificationToken(email);
 
+    await sendEmailVerification(
+      verificationToken.email,
+      verificationToken.token
+    );
+
     return {
       message: "Please verify your email",
-      type: "error",
+      type: "success",
     };
   }
 
