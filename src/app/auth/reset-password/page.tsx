@@ -19,6 +19,7 @@ import FormSubmitMessage from "../../../components/auth/formSubmitMessage";
 import { useFormStatus } from "react-dom";
 import useAuthResponse from "@/store/authResponseStore";
 import { passwordReset } from "@/actions/reset";
+import SubmitButton from "@/components/auth/submitButton";
 
 export default function ResetPassword() {
   const authResponse = useAuthResponse((state) => state.authResponse);
@@ -77,7 +78,7 @@ export default function ResetPassword() {
                 type={authResponse?.type}
               />
 
-              <SubmitButton />
+              <SubmitButton buttonText="Send password reset mail" />
             </div>
           </form>
           <div className="mt-6 text-center text-sm">
@@ -93,14 +94,5 @@ export default function ResetPassword() {
         </CardContent>
       </Card>
     </div>
-  );
-}
-
-function SubmitButton() {
-  const status = useFormStatus();
-  return (
-    <Button type="submit" disabled={status.pending} className="w-full">
-      Send password reset mail
-    </Button>
   );
 }

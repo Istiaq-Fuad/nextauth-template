@@ -22,6 +22,7 @@ import { useState } from "react";
 import { AuthResponseType } from "@/lib/types";
 import { signup } from "@/actions/signup";
 import useAuthResponse from "@/store/authResponseStore";
+import SubmitButton from "@/components/auth/submitButton";
 
 export default function SignupForm() {
   // const [formResponse, setFormResponse] = useState<AuthResponseType>({});
@@ -101,7 +102,7 @@ export default function SignupForm() {
                 type={authResponse?.type}
               />
 
-              <SubmitButton />
+              <SubmitButton buttonText="Create an account" />
             </div>
           </form>
           <SocialAuth />
@@ -114,14 +115,5 @@ export default function SignupForm() {
         </CardContent>
       </Card>
     </div>
-  );
-}
-
-function SubmitButton() {
-  const status = useFormStatus();
-  return (
-    <Button type="submit" disabled={status.pending} className="w-full">
-      Create an account
-    </Button>
   );
 }

@@ -3,6 +3,7 @@ import { z } from "zod";
 export const LoginSchema = z.object({
   email: z.string().email(),
   password: z.string().min(1, "Password is required"),
+  code: z.string().length(6, "Code must be 6 characters").optional(),
 });
 
 export type LoginSchemaType = z.infer<typeof LoginSchema>;
@@ -26,3 +27,10 @@ export const NewPasswordSchema = z.object({
 });
 
 export type NewPasswordSchemaType = z.infer<typeof NewPasswordSchema>;
+
+export const TwoFactorSchema = z.object({
+  code: z.string().length(6, "Code must be 6 characters"),
+});
+
+export type TwoFactorSchemaType = z.infer<typeof TwoFactorSchema>;
+

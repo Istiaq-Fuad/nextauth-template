@@ -1,13 +1,8 @@
+import { AuthResponseType } from "@/lib/types";
 import { cn } from "@/lib/utils";
 import { BsCheckCircleFill, BsExclamationTriangleFill } from "react-icons/bs";
 
-export default function FormSubmitMessage({
-  message,
-  type,
-}: {
-  message?: string;
-  type?: "error" | "success";
-}) {
+export default function FormSubmitMessage({ message, type }: AuthResponseType) {
   if (!message) return null;
 
   return (
@@ -17,7 +12,9 @@ export default function FormSubmitMessage({
         "bg-green-100/65 text-green-500": type === "success",
       })}
     >
-      {type === "error" ? <BsExclamationTriangleFill /> : <BsCheckCircleFill />}
+      {/* {type === "error" ? <BsExclamationTriangleFill /> : <BsCheckCircleFill />} */}
+      {type === "error" && <BsExclamationTriangleFill />}
+      {(type === "success" || type === "2FA") && <BsCheckCircleFill />}
       <p>{message}</p>
     </div>
   );

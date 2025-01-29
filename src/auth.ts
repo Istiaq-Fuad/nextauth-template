@@ -7,6 +7,7 @@ import Google from "next-auth/providers/google";
 import { LoginSchema } from "./schemas";
 import { getUserByEmail, getUserById } from "./utils/getUser";
 import bcrypt from "bcryptjs";
+import { getTwoFactorConfirmationByUserId } from "./utils/getTwoFactorConfirmation";
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
   adapter: PrismaAdapter(prisma),
@@ -37,8 +38,21 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       if (!user.id) return false;
       const existingUser = await getUserById(user.id);
 
-      if (!existingUser?.emailVerified) {
+      if (!existingUser || !existingUser.emailVerified) {
         return false;
+      }
+
+      if (existingUser.isTwoFactorEnabled) {
+        const twoFactorConfirmation = await getTwoFactorConfirmationByUserId(
+          existingUser.id
+        );
+
+        if (!twoFactorConfirmation) return false;
+
+        // Delete two factor confirmation for next sign in
+        await prisma.twoFactorConfirmation.delete({
+          where: { id: twoFactorConfirmation.id },
+        });
       }
 
       return true;
