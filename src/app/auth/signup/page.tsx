@@ -57,7 +57,7 @@ export default function SignupForm() {
         <CardContent>
           <form
             action={async () => {
-              const isValid = trigger();
+              const isValid = await trigger();
               if (!isValid) return;
 
               const formValues = getValues();

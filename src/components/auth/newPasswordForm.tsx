@@ -48,7 +48,7 @@ export default function NewPasswordForm({ token }: { token: string }) {
         <CardContent>
           <form
             action={async () => {
-              const isValid = trigger();
+              const isValid = await trigger();
               if (!isValid) return;
 
               const formValues = getValues();
